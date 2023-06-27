@@ -1,0 +1,108 @@
+<div>
+  <div class="mt-4">
+    <owl-carousel-o [options]="customOptions" >
+  
+      <ng-container *ngFor="let slide of list" >
+        <ng-template carouselSlide [id]="slide.id">
+          <img  [src]="slide.image" [width]="40" [alt]="'slide.alt'" >
+        </ng-template>
+      </ng-container>
+    
+    </owl-carousel-o>
+  </div> 
+
+  <mat-tab-group mat-stretch-tabs="true">
+    <mat-tab label="Coins">
+      <h2 class="m-3 text-center fw-bolder">{{title|uppercase}}</h2>
+      <table mat-table [dataSource]="dataSource" matSort 
+             class="mat-elevation-z8">
+      
+        <!-- Position Column -->
+        <ng-container matColumnDef="market_cap_rank">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number">
+            #
+          </th>
+          <td mat-cell *matCellDef="let element"> {{element.market_cap_rank}} </td>
+        </ng-container>
+      
+        <!-- Name Column -->
+        <ng-container matColumnDef="name" >
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name" >
+              coin
+          </th>
+          <td mat-cell  (click)="showchart(element.id)" *matCellDef="let element" ><img src={{element.image}} [width]="40"  alt=""><strong style="font-size: medium;" class="m-2"> {{element.name}}</strong> {{element.symbol| uppercase}} </td>
+        </ng-container>
+      
+        <!-- Weight Column -->
+        <ng-container matColumnDef="current_price">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by weight">
+              price
+          </th>
+          <td mat-cell  (click)="showchart(element.id)" *matCellDef="let element" >{{usd=='usd'?'$':'₹'}} {{element.current_price}} </td>
+        </ng-container>
+      
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="price_change_percentage_1h_in_currency">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by symbol">
+              1h
+          </th>
+          <td mat-cell *matCellDef="let element"  (click)="showchart(element.id)" [ngStyle]="{'color' : element.price_change_percentage_1h_in_currency<0 ? 'red' : 'green'}"> {{element.price_change_percentage_1h_in_currency.toFixed(2)}}% </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="price_change_percentage_24h_in_currency">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by symbol">
+              24h
+          </th>
+          <td mat-cell *matCellDef="let element"  (click)="showchart(element.id)" [ngStyle]="{'color' : element.price_change_percentage_24h_in_currency<0 ? 'red' : 'green'}"> {{element.price_change_percentage_24h_in_currency.toFixed(2)}}% </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="price_change_percentage_7d_in_currency">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by symbol">
+          7d
+          </th>
+          <td mat-cell *matCellDef="let element" (click)="showchart(element.id)" [ngStyle]="{'color' : element.price_change_percentage_7d_in_currency<0 ? 'red' : 'green'}"> {{element.price_change_percentage_7d_in_currency.toFixed(2)}}% </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="total_volume">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by symbol">
+              24h volume
+          </th> 
+          <td mat-cell *matCellDef="let element" (click)="showchart(element.id)" > {{element.total_volume |currency:usd=='usd'?'USD':'INR':'symbol':'2.0-2'}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="market_cap">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by symbol">
+              Mkt Cap
+          </th>
+          <td mat-cell *matCellDef="let element" (click)="showchart(element.id)" > {{element.market_cap | currency:usd=='usd'?'USD':usd=='inr'?'INR':'':'symbol':'1.0-0'}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="Last 7days">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by symbol">
+              Last 7days
+          </th>
+          <td mat-cell *matCellDef="let element" (click)="showchart(element.id)"   >
+            <div >
+            <figure class="highcharts-figure">
+                <div id={{element.id}}>{{element.id}}</div>
+            </figure>
+        </div> </td>
+         
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <mat-paginator #paginator
+                    [pageSize]="pageSize"
+                    (page)="pageChanged($event)"
+                    [pageIndex]="pagenumber"
+                    [pageSizeOptions]="[5, 10, 25, 100]"
+                    aria-label="Select page">
+      </mat-paginator>
+      
+      </mat-tab>
+    <mat-tab label="Catergories"> <app-category></app-category></mat-tab>
+    <!-- <mat-tab label="Third"> Content 3 </mat-tab> -->
+  </mat-tab-group>
+</div>
